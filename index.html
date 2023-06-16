@@ -170,6 +170,9 @@
           <img src="./static/gifs/animation_abc_8031.gif" alt="abc-8031">
         </div>
       </div>
+      <p>
+        ARO-Net encodes <b>contextual</b> information from anchors, which is different against most existing methods (such as <a href="https://github.com/ErlerPhilipp/points2surf">Points2Surf</a> and <a href="https://pengsongyou.github.io/conv_onet">ConvONet</a>) that encode <b>neighboring</b> information around query point, yielding better reconstruction (see the holes) on sparse input and generalizability on unseen categories.
+      </p>
     </div>
   </div>
 </section>
@@ -216,12 +219,41 @@
 
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Why ARO is Category Agnostic?</h2>
+        <h2 class="title is-3">How does ARO work?</h2>
 
         <div class="content has-text-justified">
           <img src="./static/images/vis_and_occ.png" alt="vis_and_occ">
           <p>
-            ARO is based on measuring the relationship between anchor visibility and point occupancy. If we have a set of anchors that together observe the entire surface of the shape, then their visible regions together can fully determine the inside and outside regions of the shape. (Check our video for details.)
+            If we have a set of anchors that together observe the entire surface of the shape, whether a query point is inside/outside can be determined by its relationship to the radial observations of anchors. 
+            For example, in subfigure (b) when anchors are all interior, 
+          </p>
+          <div class="columns is-centered has-text-centered">
+            <p>
+            a query point (red star) is inside the shape 
+            ⇔
+            it is covered by at least one radial observation (the red anchor)
+           </p>
+          </div>
+            (For other situations, please check our video and paper for more details.)
+          <p>
+            ARO learns an <a href="https://github.com/vsitzmann/awesome-implicit-representations#what-are-implicit-neural-representations">implicit function</a> by modeling the observations from different anchors to query point, which is <b>contextual</b> and <b>query-specific</b>, making it quite different from existing methods.
+          </p>
+          </div>
+
+        <br/>
+
+
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">ARO Network</h2>
+
+        <div class="content has-text-justified">
+          <img src="./static/images/pipeline.png" alt="pipeline">
+          <p>
+            In practice, shapes can only be <b>partially</b> observed by a set of anchors. We introduce ARO-Net to predict the occupancy from less/incomplete Information after training with data. ARO-Net learns to predict the occupancy of a query point given only partial observations.
         
           </div>
 
@@ -240,7 +272,7 @@
             <img src="./static/images/anchor_placement.png" alt="anchor_placement" width="50%">
           </div>
           <p>
-            We use Fibonacci Sampling to construct the anchors. Layered Fibonacci sampling makes the anchors have generally good visibility about the shapes.
+            We use <a href="http://extremelearning.com.au/how-to-evenly-distribute-points-on-a-sphere-more-effectively-than-the-canonical-fibonacci-lattice/">Fibonacci Sampling</a> to construct the anchors. Layered Fibonacci sampling makes the anchors have generally good visibility about the shapes.
           </p>
         </div>
 
@@ -252,9 +284,9 @@
 
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3">Category-agnostic Ability</h2>
+        <h2 class="title is-3">Strong Generalizability</h2>
         <div class="columns is-centered has-text-centered">
-        <img src="./static/images/generality.png" alt="generality" width="80%">
+        <img src="./static/images/generality.png" alt="generality" width="70%">
         </div>
         <div class="content has-text-justified">
           <p>
@@ -274,8 +306,14 @@
 
         <div class="content has-text-justified">
           <p>
-            Visually, ARONet produces the most complete, artifact-free results with faithful reconstruction of fine details. In the airplane results, it is worth observing that ARO-Net managed to reconstruct the left-side turbine from extremely sparse points, while other methods all completely missed it.
+            Visually, ARONet produces the most complete, artifact-free results with faithful reconstruction of fine details. In this airplane case, ARO-Net managed to reconstruct the left-side turbine from extremely sparse points, while other methods all completely missed it.
           </p>
+          <div class="item airplane_7">
+            <img src="./static/gifs/animation_airplane_7_view1.gif" alt="airplane_7_view1">
+          </div>  
+          <div class="item airplane_7">
+            <img src="./static/gifs/animation_airplane_7_view2.gif" alt="airplane_7_view2">
+          </div>  
         </div>
 
         <br/>
@@ -292,8 +330,25 @@
 
         <div class="content has-text-justified">
           <p>
-            ARO-Net exhibits superior robustness to sparsity of input point clouds compared to its close competitors. Trained on 2048 points and tested on 2048, 1024, 256 points.
+            ARO-Net exhibits superior robustness to sparsity of input point clouds compared to its close competitors.
           </p>
+
+          <p>
+            When all methids are trained on 2048-point input and tested on 2048-point input, ARO achieves the best reconstruction quality while results from others are also okay.
+          </p>
+          <div class="item abc_8026">
+            <img src="./static/gifs/animation_abc_8260_pcd_2048.gif" alt="abc-8026-2048">
+          </div>            
+          <p>
+            However, when testing on 1024 and 512 points as input, ARO-Net performs much better than other SOTA methods.
+          </p>
+          <div class="item abc_8026">
+            <img src="./static/gifs/animation_abc_8260_pcd_1024.gif" alt="abc-8026-1024">
+          </div>   
+          <div class="item abc_8026">
+            <img src="./static/gifs/animation_abc_8260_pcd_512.gif" alt="abc-8026-512">
+          </div>
+
         </div>
 
         <br/>
